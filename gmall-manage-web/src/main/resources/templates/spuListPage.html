@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en"  xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>spu列表</title>
+    <script type="text/javascript" src="/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="/easyui/easyloader.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css"  href="/easyui/themes/default/easyui.css">
+
+    <!--引入图片上传工具webuploader-->
+    <link rel="stylesheet" type="text/css" href="/webuploader/webuploader.css">
+    <script type="text/javascript" src="/webuploader/webuploader.js"></script>
+</head>
+<body>
+<div class="easyui-panel" title=""  data-options="border:true">
+    <!-----------------列表 ----------------------------->
+    <table id="spuInfolistDg" class="easyui-datagrid" title="spu列表"
+           data-options="singleSelect:true,method:'get' ,toolbar:'#spulist_tb'">
+        <thead>
+        <tr>
+            <th data-options="field:'id'" width="10%">商品id </th>
+            <th data-options="field:'spuName'" width="30%">商品名称</th>
+            <th data-options="field:'description'" width="60%">商品描述 </th>
+        </tr>
+        </thead>
+    </table>
+    <!-----------------列表的工具栏----------------------------->
+    <div id="spulist_tb" style="padding:5px;height:auto">
+        <div style="margin-bottom:5px">
+            <a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="addSpuInfo()">添加</a>
+            <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="editSpuInfo()">编辑</a>
+            <a href="#" class="easyui-linkbutton" iconCls="icon-remove" plain="true" onclick="deleteSpuInfo()">删除</a>
+            <a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true" onclick="addSkuInfo()">增加sku</a>
+            <a href="#" class="easyui-linkbutton" iconCls="icon-search" plain="true" onclick="showSkuInfoList()"> sku列表</a>
+        </div>
+        <div>
+            一级分类：
+            <input id="cataLog1" class="easyui-combobox" data-options="
+                valueField: 'id',
+                textField: 'name',
+                url: 'cataLog1List',
+                onSelect: function(rec){
+                    var url = 'cataLog2List?cataLog1Id='+rec.id;
+                    $('#cataLog2').combobox('reload', url);
+                }" />
+            二级分类：
+            <input id="cataLog2" class="easyui-combobox" data-options="
+                valueField: 'id',
+                textField: 'name',
+                url: '',
+                onSelect: function(rec){
+                    var url = 'cataLog3List?cataLog2Id='+rec.id;
+                    $('#cataLog3').combobox('reload', url);
+                }" />
+            三级分类：
+            <input id="cataLog3" class="easyui-combobox" data-options="
+                valueField: 'id',
+                textField: 'name',
+                url: '',
+                onSelect: function(rec){
+                    $('#spuInfolistDg').datagrid({url: 'spuInfoList?cataLog3Id='+rec.id});
+                }" />
+            <a href="#" class="easyui-linkbutton" iconCls="icon-search" onclick="javascript:reloadAttrList()">刷新属性列表</a>
+
+        </div>
+    </div>
+
+    <div th:include="spuInfoPage"></div>
+
+    <div th:include="skuInfoPage"></div>
+
+    <div th:include="skuListPage"></div>
+</div>
+</body>
+</html>
